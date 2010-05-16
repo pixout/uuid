@@ -9,7 +9,7 @@ include (CheckFunctionExists)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-CHECK_LIBRARY_EXISTS(dmalloc "dmalloc_startup" "" HAVE_LIBDMALLOC)
+#CHECK_LIBRARY_EXISTS(dmalloc "dmalloc_startup" "" HAVE_LIBDMALLOC)
 
 CHECK_FUNCTION_EXISTS("clock_gettime" HAVE_CLOCK_GETTIME)
 CHECK_FUNCTION_EXISTS("getifaddrs" HAVE_GETIFADDRS)
@@ -102,7 +102,8 @@ set(uuid_SOURCE_FILES
 
 add_library(uuid ${uuid_SOURCE_FILES})
 
+set(UUID_LIBRARIES uuid CACHE INTERNAL "Libraries needed to link uuid")
+
 install(TARGETS uuid
-        RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
