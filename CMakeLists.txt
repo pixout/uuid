@@ -75,16 +75,15 @@ set(WITH_CXX 1)
 #/* Define to 1 if you have the ANSI C header files. */
 #/* #cmakedefine STDC_HEADERS */
 
-
-# #define _UUID_VERSION 0x106202
-
 file(READ uuid_vers.h UUID_VERS_CONTENT)
 string(REGEX MATCH "#define _UUID_VERSION ([0-9x]*)" UUID_VERSION_HEX_LINE ${UUID_VERS_CONTENT})
 MESSAGE(STATUS "Found uuid version hex " ${CMAKE_MATCH_1})
 set(UUID_VERSION_HEX ${CMAKE_MATCH_1})
 
 CONFIGURE_FILE("config.h.cmake.in" "config.h")
+CONFIGURE_FILE(${CMAKE_CURRENT_BINARY_DIR}/config.h ${CMAKE_CURRENT_SOURCE_DIR}/config.h COPYONLY)
 CONFIGURE_FILE("uuid.h.in" "uuid.h")
+CONFIGURE_FILE(${CMAKE_CURRENT_BINARY_DIR}/uuid.h ${CMAKE_CURRENT_SOURCE_DIR}/uuid.h COPYONLY)
 
 set(uuid_SOURCE_FILES
 	uuid_dce.c

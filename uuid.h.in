@@ -90,8 +90,20 @@ typedef enum {
 } uuid_fmt_t;
 
 /* UUID abstract data type */
+#ifdef __APPLE_CC__
+// Workaround for Mac OS X, OSX's unistd.h typedefs uuid_t as an unsigned char[16] and
+//	thus cannot be #undef'd
+struct uuid_st;
+#ifdef _UUID_T
+	#define uuid_t struct uuid_st
+#else
+	#define	_UUID_T
+	typedef struct uuid_st uuid_t;
+#endif
+#else
 struct uuid_st;
 typedef struct uuid_st uuid_t;
+#endif
 
 /* UUID object handling */
 extern uuid_rc_t     uuid_create   (      uuid_t **_uuid);
