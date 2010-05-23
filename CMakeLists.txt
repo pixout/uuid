@@ -9,6 +9,9 @@ include (CheckFunctionExists)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
+set(CMAKE_BUILD_TYPE Release)
+
+
 #CHECK_LIBRARY_EXISTS(dmalloc "dmalloc_startup" "" HAVE_LIBDMALLOC)
 
 CHECK_FUNCTION_EXISTS("clock_gettime" HAVE_CLOCK_GETTIME)
@@ -75,10 +78,12 @@ set(WITH_CXX 1)
 #/* Define to 1 if you have the ANSI C header files. */
 #/* #cmakedefine STDC_HEADERS */
 
-file(READ uuid_vers.h UUID_VERS_CONTENT)
-string(REGEX MATCH "#define _UUID_VERSION ([0-9x]*)" UUID_VERSION_HEX_LINE ${UUID_VERS_CONTENT})
-MESSAGE(STATUS "Found uuid version hex " ${CMAKE_MATCH_1})
-set(UUID_VERSION_HEX ${CMAKE_MATCH_1})
+if(NOT DEFINED UUID_VERSION_HEX)
+	file(READ uuid_vers.h UUID_VERS_CONTENT)
+	string(REGEX MATCH "#define _UUID_VERSION ([0-9x]*)" UUID_VERSION_HEX_LINE ${UUID_VERS_CONTENT})
+	MESSAGE(STATUS "Found uuid version hex " ${CMAKE_MATCH_1})
+	set(UUID_VERSION_HEX ${CMAKE_MATCH_1} CACHE INTERNAL "Internal uuid version hex, used by uuid.h")
+endif()
 
 CONFIGURE_FILE("config.h.cmake.in" "config.h")
 CONFIGURE_FILE(${CMAKE_CURRENT_BINARY_DIR}/config.h ${CMAKE_CURRENT_SOURCE_DIR}/config.h COPYONLY)
@@ -99,10 +104,23 @@ set(uuid_SOURCE_FILES
 	uuid++.cc
 	)
 
-add_library(uuid ${uuid_SOURCE_FILES})
+option(UUID_SHARED "Build uuid as a shared library?" YES)
+if(UUID_SHARED)
+	set(UUID_LIBTYPE SHARED)
+else()
+	set(UUID_LIBTYPE STATIC)
+endif()
+
+
+add_library(uuid ${UUID_LIBTYPE} ${uuid_SOURCE_FILES})
+set_target_properties(uuid PROPERTIES VERSION 1.6.2)
 
 set(UUID_LIBRARIES uuid CACHE INTERNAL "Libraries needed to link uuid")
 
 install(TARGETS uuid
+		EXPORT uuid
         LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+    	ARCHIVE DESTINATION lib)
+		
+install(EXPORT uuid
+		DESTINATION lib/uuid)
