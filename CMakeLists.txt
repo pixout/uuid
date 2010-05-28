@@ -81,7 +81,7 @@ set(WITH_CXX 1)
 if(NOT DEFINED UUID_VERSION_HEX)
 	file(READ uuid_vers.h UUID_VERS_CONTENT)
 	string(REGEX MATCH "#define _UUID_VERSION ([0-9x]*)" UUID_VERSION_HEX_LINE ${UUID_VERS_CONTENT})
-	MESSAGE(STATUS "Found uuid version hex " ${CMAKE_MATCH_1})
+	#MESSAGE(STATUS "Found uuid version hex " ${CMAKE_MATCH_1})
 	set(UUID_VERSION_HEX ${CMAKE_MATCH_1} CACHE INTERNAL "Internal uuid version hex, used by uuid.h")
 endif()
 
@@ -89,6 +89,14 @@ CONFIGURE_FILE("config.h.cmake.in" "config.h")
 CONFIGURE_FILE(${CMAKE_CURRENT_BINARY_DIR}/config.h ${CMAKE_CURRENT_SOURCE_DIR}/config.h COPYONLY)
 CONFIGURE_FILE("uuid.h.in" "uuid.h")
 CONFIGURE_FILE(${CMAKE_CURRENT_BINARY_DIR}/uuid.h ${CMAKE_CURRENT_SOURCE_DIR}/uuid.h COPYONLY)
+
+list(APPEND uuid_CLEAN_FILES ${CMAKE_CURRENT_SOURCE_DIR}/config.h)
+list(APPEND uuid_CLEAN_FILES ${CMAKE_CURRENT_SOURCE_DIR}/uuid.h)
+list(APPEND uuid_CLEAN_FILES config.h;uuid.h)
+
+# Remove the files generated in the Source directory on clean
+set_directory_properties(PROPERTIES   
+				ADDITIONAL_MAKE_CLEAN_FILES "${uuid_CLEAN_FILES}")
 
 set(uuid_SOURCE_FILES
 	uuid_dce.c
