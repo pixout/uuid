@@ -132,3 +132,7 @@ install(TARGETS uuid
 		
 install(EXPORT uuid
 		DESTINATION lib/uuid)
+
+install(FILES uuid++.hh uuid.h uuid_dce.h
+	DESTINATION include/uuid)
+
