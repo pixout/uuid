@@ -173,7 +173,7 @@ uuid_rc_t uuid_clone(const uuid_t *uuid, uuid_t **clone)
     uuid_t *obj;
 
     /* argument sanity check */
-    if (uuid == NULL || uuid_clone == NULL)
+    if (uuid == NULL || clone == NULL)
         return UUID_RC_ARG;
 
     /* allocate UUID object */
