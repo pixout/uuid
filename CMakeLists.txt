@@ -122,7 +122,11 @@ endif()
 
 add_library(uuid ${UUID_LIBTYPE} ${uuid_SOURCE_FILES})
 set_target_properties(uuid PROPERTIES VERSION 1.6.2)
-target_include_directories(uuid PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+target_include_directories(uuid PUBLIC  
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>  
+    $<INSTALL_INTERFACE:include/uuid>
+)
 
 set(UUID_LIBRARIES uuid CACHE INTERNAL "Libraries needed to link uuid")
 
