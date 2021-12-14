@@ -112,11 +112,13 @@ set(uuid_SOURCE_FILES
 	uuid++.cc
 	)
 
-option(UUID_SHARED "Build uuid as a shared library?" YES)
+option(UUID_SHARED "Build uuid as a shared library?" ON)
 if(UUID_SHARED)
 	set(UUID_LIBTYPE SHARED)
+        message(STATUS "UUID Library will be shared")
 else()
 	set(UUID_LIBTYPE STATIC)
+        message(STATUS "UUID Library will be static")
 endif()
 
 
